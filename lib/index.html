@@ -1,0 +1,52 @@
+<html>
+  <head>
+    <style>
+      code {
+        background-color: #DDD;
+      }
+
+      .output {
+        display: flex;
+        word-wrap: break-word;
+      }
+
+      .cmdout {
+        padding: 10px;
+        margin: 10px;
+      }
+    </style>
+  </head>
+  <body>
+    <form action="#">
+      <textarea id="cmd" rows="4" cols="50"></textarea><br>
+      <input type="text" id="field">
+      <input type="submit" onclick="submitStuff(document.forms[0].elements[0].value.replace('%s', encodeURIComponent(document.forms[0].elements[1].value).replace('%20', '+')), Array.apply(null, document.getElementsByClassName('cmdout')))"></input>
+    </form>
+    <div class="output">
+      <div class="cmdout"></div>
+      <code class="cmdout"></code>
+    </div>
+
+    <script type="text/javascript">
+      var submitStuff = function submitStuff(data, outputNodes) {
+        var request = new XMLHttpRequest();
+        request.open('POST', document.URL);
+        request.send(data);
+        request.onreadystatechange = function() {
+          if (request.readyState === 4) {
+            outputNodes.forEach(function(node) {
+              if (node.tagName === 'CODE') {
+                node.textContent = request.response;
+              }
+              else {
+                node.innerHTML = request.response.replace(/\<[^\>]+\>/g, '');
+              }
+            });
+          }
+        };
+      };
+
+
+    </script>
+  </body>
+</html>
